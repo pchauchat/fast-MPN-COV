@@ -25,68 +25,51 @@ import torch.utils.data.distributed
 # import os
 # os.environ["PATH"] += os.pathsep + 'c:/users/chauchatp/anaconda3/lib/site-packages'
 
-parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
-parser.add_argument('data', metavar='DIR',
-                    help='path to dataset')
-parser.add_argument('--arch', '-a', metavar='ARCH', default='resnet18',
-                    help='model architecture: ')
-parser.add_argument('-j', '--workers', default=8, type=int, metavar='N',
-                    help='number of data loading workers (default: 4)')
-parser.add_argument('--epochs', default=100, type=int, metavar='N',
-                    help='number of total epochs to run')
-parser.add_argument('--start-epoch', default=0, type=int, metavar='N',
-                    help='manual epoch number (useful on restarts)')
-parser.add_argument('-b', '--batch-size', default=256, type=int,
-                    metavar='N', help='mini-batch size (default: 256)')
-parser.add_argument('--lr', '--learning-rate', default=0.1, type=float,
-                    metavar='LR', help='initial learning rate')
-parser.add_argument('--lr-method', default='step', type=str,
-                    help='method of learning rate')
-parser.add_argument('--lr-params', default=[], dest='lr_params',nargs='*',type=float,
-                    action='append', help='params of lr method')
-parser.add_argument('--momentum', default=0.9, type=float, metavar='M',
-                    help='momentum')
-parser.add_argument('--weight-decay', '--wd', default=1e-4, type=float,
-                    metavar='W', help='weight decay (default: 1e-4)')
-parser.add_argument('--print-freq', '-p', default=10, type=int,
-                    metavar='N', help='print frequency (default: 10)')
-parser.add_argument('--resume', default='', type=str, metavar='PATH',
-                    help='path to latest checkpoint (default: none)')
-parser.add_argument('-e', '--evaluate', dest='evaluate', action='store_true',
-                    help='evaluate model on validation set')
-parser.add_argument('--pretrained', dest='pretrained', action='store_true',
-                    help='use pre-trained model')
-parser.add_argument('--world-size', default=1, type=int,
-                    help='number of distributed processes')
-parser.add_argument('--dist-url', default='tcp://224.66.41.62:23456', type=str,
-                    help='url used to set up distributed training')
-parser.add_argument('--dist-backend', default='gloo', type=str,
-                    help='distributed backend')
-parser.add_argument('--seed', default=None, type=int,
-                    help='seed for initializing training. ')
-parser.add_argument('--gpu', default=None, type=int,
-                    help='GPU id to use.')
-parser.add_argument('--modeldir', default=None, type=str,
-                    help='director of checkpoint')
-parser.add_argument('--representation', default=None, type=str,
-                    help='define the representation method')
-parser.add_argument('--num-classes', default=None, type=int,
-                    help='define the number of classes')
-parser.add_argument('--freezed-layer', default=None, type=int,
-                    help='define the end of freezed layer')
-parser.add_argument('--store-model-everyepoch', dest='store_model_everyepoch', action='store_true',
-                    help='store checkpoint in every epoch')
-parser.add_argument('--classifier-factor', default=None, type=int,
-                    help='define the multiply factor of classifier')
-parser.add_argument('--benchmark', default=None, type=str,
-                    help='name of dataset')
-best_prec1 = 0
+class Args(object):
+    def __init__(self):
+        self.init = 'True'
 
+args = Args()
+
+args.data = 'C:/Users/chauchatp/Documents/Data/ImageNet_Tiny'
+args.arch = 'resnet50'
+args.j = 4
+args.epochs = 65
+args.start_epoch = 0
+args.batch_size = 10
+args.lr = 0.1
+args.lr_method = 'step'
+args.lr_params = [30, 45, 60]
+args.momentum = 0.9
+args.weight_decay = 1e-4
+args.workers = 4
+args.print_freq = 100
+args.resume = False
+args.evaluate = False
+args.pretrained = False
+args.world_size = 1
+args.dist_url = 'tcp://224.66.41.62:23456'
+args.dist_backend = 'gloo'
+args.seed = None
+args.gpe = None
+args.modeldir = 'FromScratch-ImageNet_tiny-mpncovresnet50-MPNCOV-reproduce-lr0.1-bs10'
+args.representation = 'MPNCOV'
+args.num_classes = 200
+args.freezed_layer = 0
+args.classifier_factor = 1
+args.benchmark = 'ImageNet'
+args.gpu = None
+
+
+
+
+
+# parser = argparse.ArgumentParser(description='PyTorch ImageNet Training')
+
+best_prec1 = 0
 
 def main():
     global args, best_prec1
-    args = parser.parse_args()
-    print(args)
     if args.seed is not None:
         random.seed(args.seed)
         torch.manual_seed(args.seed)
@@ -401,6 +384,8 @@ class Learning_rate_generater(object):
     """Generates a list of learning rate for each training epoch"""
     def __init__(self, method, params, total_epoch):
         if method == 'step':
+            print(params)
+            print(total_epoch)
             lr_factor, lr = self.step(params, total_epoch)
         elif method == 'log':
             lr_factor, lr = self.log(params, total_epoch)
@@ -409,7 +394,7 @@ class Learning_rate_generater(object):
         self.lr_factor = lr_factor
         self.lr = lr
     def step(self, params, total_epoch):
-        decrease_until = params[0]
+        decrease_until = params
         decrease_num = len(decrease_until)
         base_factor = 0.1
         lr_factor = torch.ones(total_epoch, dtype=torch.double)
@@ -460,7 +445,7 @@ def accuracy(output, target, topk=(1,)):
 
         res = []
         for k in topk:
-            correct_k = correct[:k].view(-1).float().sum(0, keepdim=True)
+            correct_k = correct[:k].contiguous().view(-1).float().sum(0, keepdim=True)
             res.append(correct_k.mul_(100.0 / batch_size))
         return res
 

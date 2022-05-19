@@ -38,10 +38,10 @@ description=reproduce
 
 #*******************Dataset*******************
 #Choose the dataset folder
-benchmark=ImageNet1K
-datadir=\Users\chauchatp\Documents\Data\Tiny_ImageNet
+benchmark=tiny-imagenet-200
+datadir=C:/Users/chauchatp/Documents/Data/Tiny_ImageNet/
 dataset=$datadir/$benchmark
-num_classes=1000
+num_classes=200
 #*********************************************
 
 #****************Hyper-parameters*************
@@ -66,23 +66,25 @@ weight_decay=1e-4
 classifier_factor=1
 #*********************************************
 echo "Start training!"
+echo "Before Python0"
 modeldir=Results/FromScratch-$benchmark-$arch-$image_representation-$description-lr$lr-bs$batchsize
 
 if [ ! -d  "Results" ]; then
-
+echo "Before Python"
 mkdir Results
 
 fi
-
+echo "Before Python2"
 if [ ! -e $modeldir/*.pth.tar ]; then
-
+echo "Before Python3"
 if [ ! -d  "$modeldir" ]; then
-
+echo "Before Python4"
 mkdir $modeldir
 
 fi
+echo "Before Python5"
 cp train.sh $modeldir
-
+echo "Before Python6"
 python main.py $dataset\
                --benchmark $benchmark\
                -a $arch\
@@ -99,10 +101,11 @@ python main.py $dataset\
                --classifier-factor $classifier_factor\
                --benchmark $benchmark\
                --modeldir $modeldir
-
+read -p "Press any key"
 else
+echo "Before Python7"
 checkpointfile=$(ls -rt $modeldir/*.pth.tar | tail -1)
-
+read -p "Press any key"
 python main.py $dataset\
                --benchmark $benchmark\
                -a $arch\
@@ -122,4 +125,5 @@ python main.py $dataset\
                --resume $checkpointfile
 
 fi
+
 echo "Done!"

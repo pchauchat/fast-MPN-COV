@@ -41,7 +41,7 @@ description=reproduce
 benchmark=ImageNet1K
 datadir=\Users\chauchatp\Documents\Data\Tiny_ImageNet
 dataset=$datadir/$benchmark
-num_classes=1000
+num_classes=200
 #*********************************************
 
 #****************Hyper-parameters*************
@@ -66,23 +66,25 @@ weight_decay=1e-4
 classifier_factor=1
 #*********************************************
 echo "Start training!"
+echo "Before Python"
 modeldir=Results/FromScratch-$benchmark-$arch-$image_representation-$description-lr$lr-bs$batchsize
 
 if [ ! -d  "Results" ]; then
-
+echo "Before Python"
 mkdir Results
 
 fi
-
+echo "Before Python2"
 if [ ! -e $modeldir/*.pth.tar ]; then
-
+echo "Before Python3"
 if [ ! -d  "$modeldir" ]; then
-
+echo "Before Python4"
 mkdir $modeldir
 
 fi
+echo "Before Python5"
 cp train.sh $modeldir
-
+echo "Before Python6"
 python main.py $dataset\
                --benchmark $benchmark\
                -a $arch\
