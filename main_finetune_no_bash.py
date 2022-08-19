@@ -31,34 +31,34 @@ class Args(object):
 
 args = Args()
 
-args.data = 'C:/Users/chauchatp/Documents/Data/ImageNet_Tiny'
-args.arch = 'resnet50'
+args.data = 'C:/Users/chauchatp/Documents/Data/CUB_200_2011/CUB_200_2011'
+args.arch = 'mpncovresnet50'
 args.j = 4
 args.epochs = 65
 args.start_epoch = 0
 args.batch_size = 10
-args.lr = 0.1
+args.lr = 1.2e-3
 args.lr_method = 'step'
-args.lr_params = [30, 45, 60]
+args.lr_params = [100]
 args.momentum = 0.9
-args.weight_decay = 1e-4
+args.weight_decay = 1e-3
 args.workers = 4
 args.print_freq = 100
 args.resume = False
 args.evaluate = False
-args.pretrained = False
+args.pretrained = True
 args.world_size = 1
 args.dist_url = 'tcp://224.66.41.62:23456'
 args.dist_backend = 'gloo'
 args.seed = None
 args.gpe = None
-args.modeldir = 'FromScratch-ImageNet_tiny-mpncovresnet50-MPNCOV-reproduce-lr0.1-bs10'
+args.modeldir = 'Finetune-CUB-mpncovresnet50-MPNCOV-reproduce-lr0.1-bs10'
 # args.representation = 'MPNCOV'
 args.representation = 'MPNCOV_SPD'
 args.num_classes = 200
 args.freezed_layer = 0
-args.classifier_factor = 1
-args.benchmark = 'ImageNet'
+args.classifier_factor = 5
+args.benchmark = 'CUB'
 args.gpu = None
 
 

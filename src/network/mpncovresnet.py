@@ -91,6 +91,9 @@ def mpncovresnet50(pretrained=False, **kwargs):
     """
     model = MPNCOVResNet(Bottleneck, [3, 4, 6, 3], **kwargs)
     if pretrained:
+        #TODO Le lien est mort, mais le reseau preentraine peut etre dl depuis le github du projet
+        #Suffit de le mettre a la main dans le dossier de cache, type C:\user\.cache\torch\hub\checkpoints
+        #Ca pointe sur un google drive donc ca doit pouvoir etre automatise mais y a possiblement des subtilites
         model.load_state_dict(model_zoo.load_url(model_urls['mpncovresnet50']))
     return model
 
